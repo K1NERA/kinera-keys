@@ -8,6 +8,7 @@ include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
 mod weights;
 pub mod xcm_config;
+use sp_consensus_aura::SlotDuration;
 
 use cumulus_pallet_parachain_system::RelayNumberStrictlyIncreases;
 use polkadot_runtime_common::xcm_sender::NoPriceForMessageDelivery;
@@ -549,15 +550,16 @@ mod benches {
 }
 
 impl_runtime_apis! {
-	impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
-		fn slot_duration() -> sp_consensus_aura::SlotDuration {
-			sp_consensus_aura::SlotDuration::from_millis(Aura::slot_duration())
-		}
+  impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
+    fn slot_duration() -> SlotDuration {
+      SlotDuration::from_millis(Aura::slot_duration())
+    }
 
-		fn authorities() -> Vec<AuraId> {
-			Aura::authorities().into_inner()
-		}
-	}
+    fn authorities() -> Vec<AuraId> {
+      Aura::authorities().to_vec()
+    }
+
+  }
 
 	impl sp_api::Core<Block> for Runtime {
 		fn version() -> RuntimeVersion {
